@@ -10,3 +10,5 @@ sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-test
 tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "patch-v2.0.2", features = [
   "keccak",
 ] }
+plonky2 = { path = "../../../zkp/plonky2/plonky2" }               # https://github.com/xiyu1984/plonky2
+plonky2_field = { path = "../../../zkp/plonky2/field" }               # https://github.com/xiyu1984/plonky2

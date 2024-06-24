@@ -38,6 +38,11 @@ cd script
 RUST_LOG=info cargo run --bin prove_keccak256 --release -- --evm
 ```
 
+```
+cd script
+RUST_LOG=info cargo run --bin prove_poseidon_goldilocks --release -- --evm
+```
+
 ### Solidity Proof Verification
 
 After generating the verify the proof with the SP1 EVM verifier.
