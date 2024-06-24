@@ -10,7 +10,7 @@ pub const POSEIDON_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-s
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 struct ProveArgs {
-    #[clap(long, default_value = "256")]
+    #[clap(long, default_value = "32")]
     n: usize,
 
     #[clap(long, default_value = "false")]
