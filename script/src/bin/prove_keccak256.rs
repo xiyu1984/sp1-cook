@@ -1,5 +1,6 @@
 use clap::Parser;
 use sp1_sdk::{ProverClient, SP1Stdin};
+use tracing::info;
 
 pub const KECCAK256_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
 
@@ -31,7 +32,7 @@ fn main() {
     let mut sp1in = SP1Stdin::new();
     sp1in.write(&args.n);
 
-    println!("n: {}", args.n);
+    info!("n: {}", args.n);
 
     (0..args.n).for_each(|i| {
         let input_msg = format!("hello omniverse {}", i);
@@ -52,9 +53,9 @@ fn main() {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
         let pis = proof.public_values.as_slice();
-        println!("Successfully generated proof!");
+        info!("Successfully generated proof!");
         assert!(pis.len() % 32 == 0, "invalid hash out");
-        println!("hash number: (n): {}", pis.len() / 32);
+        info!("hash number: (n): {}", pis.len() / 32);
 
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
