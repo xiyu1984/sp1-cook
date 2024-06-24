@@ -20,3 +20,6 @@ pgo-data.profdata
 
 #ELF
 **/elf
+
+#fixtures
+**/fixtures
