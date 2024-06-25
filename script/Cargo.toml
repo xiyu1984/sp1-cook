@@ -17,6 +17,12 @@ clap = { version = "4.0", features = ["derive", "env"] }
 tracing = "0.1.40"
 alloy-sol-types = "0.7.2"
 plonky2_field = { path = "../../../zkp/plonky2/field" }               # https://github.com/xiyu1984/plonky2
+k256 = { version = "0.13.3", features = ["ecdsa", "std", "bits"] }
+tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "patch-v2.0.2", features = [
+  "keccak",
+] }
+hex = {version = "0.4.3"}
+rand = "0.8.5"
 
 [build-dependencies]
 # sp1-helper = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-testnet" }

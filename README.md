@@ -28,19 +28,30 @@ RUST_LOG=info cargo run --bin prove --release
 
 Generate the proof that is small enough to be verified on-chain and verifiable by the EVM. This command also generates a fixture that can be used to test the verification of SP1 zkVM proofs inside Solidity.
 
-```
+```sh
 cd script
 RUST_LOG=info cargo run --bin prove --release -- --evm
 ```
 
-```
+```sh
 cd script
 RUST_LOG=info cargo run --bin prove_keccak256 --release -- --evm
 ```
 
-```
+```sh
 cd script
 RUST_LOG=info cargo run --bin prove_poseidon_goldilocks --release -- --evm
+```
+
+```sh
+cd script
+RUST_LOG=info cargo run --bin prove_ecdsa --release -- --evm
+```
+
+### Unit Tests
+
+```sh
+RUST_LOG=info cargo test -r --lib -- utils::unit_tests
 ```
 
 ### Solidity Proof Verification

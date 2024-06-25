@@ -6,9 +6,12 @@ edition = "2021"
 
 [dependencies]
 alloy-sol-types = "0.7.2"
-sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-testnet" }
+# sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-testnet" }
+sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint" }
+sp1-precompiles = { path = "../../../infra/sp1/zkvm/precompiles" }
 tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "patch-v2.0.2", features = [
   "keccak",
 ] }
+k256 = { version = "0.13.3", features = ["ecdsa", "std", "bits"] }
 plonky2 = { path = "../../../zkp/plonky2/plonky2" }               # https://github.com/xiyu1984/plonky2
 plonky2_field = { path = "../../../zkp/plonky2/field" }               # https://github.com/xiyu1984/plonky2

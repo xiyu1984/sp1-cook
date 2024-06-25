@@ -9,7 +9,9 @@
 
 // use fibonacci_program::cooks::keccak256::calc_keccak256;
 
-use fibonacci_program::cooks::poseidon_hash::calc_poseidon;
+// use fibonacci_program::cooks::poseidon_hash::calc_poseidon;
+
+use fibonacci_program::cooks::verify_ecdsa::verify_ecdsa;
 
 // use fibonacci_program::cooks::fibonacci::fibonacci;
 sp1_zkvm::entrypoint!(main);
@@ -17,5 +19,6 @@ sp1_zkvm::entrypoint!(main);
 pub fn main() {
     // fibonacci();
     // calc_keccak256();
-    calc_poseidon();
+    // calc_poseidon();
+    verify_ecdsa();
 }

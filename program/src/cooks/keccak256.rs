@@ -15,7 +15,7 @@ pub fn calc_keccak256() {
 
 // use sp1_zkvm::syscalls::syscall_keccak_permute;
 
-// pub fn calc_keccak256() {
+// pub fn sys_calc_keccak256() {
 //     // let num_cases = sp1_zkvm::io::read::<usize>();
 //     for _ in 0..2 {
 //         let mut state = [1u64; 25];
