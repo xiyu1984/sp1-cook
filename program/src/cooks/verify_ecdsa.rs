@@ -15,6 +15,8 @@ pub fn verify_ecdsa() {
 
     let signature_vu8: [u8; 64] = sp1_zkvm::io::read_vec().try_into().expect("circuit reading signature error");
     let signature: Signature = Signature::from_slice(&signature_vu8).expect("circuit construct signature error");
+    
+    // `verify_signature` errors
     assert!(verify_signature(&pk_slice, &msg_digest, &signature, None), "Invalid signature");
 
     // The below is ok
