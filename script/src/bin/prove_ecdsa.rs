@@ -1,5 +1,7 @@
 use clap::Parser;
-use k256::ecdsa::{signature::{Signer, Verifier}, Signature, SigningKey, VerifyingKey};
+use k256::ecdsa::{Signature, SigningKey, VerifyingKey};
+use k256::ecdsa::signature::hazmat::PrehashVerifier;
+use k256::ecdsa::signature::hazmat::PrehashSigner;
 use sp1_sdk::{ProverClient, SP1Stdin};
 use tiny_keccak::{Hasher, Keccak};
 
@@ -30,13 +32,14 @@ fn main() {
     hasher.finalize(&mut msg_digest);
     // info!("hash: {:?}", msg_digest);
     
-    let signature: Signature = sign_key.sign(&msg_digest);
+    // let signature: Signature = sign_key.sign(&msg_digest);
+    let signature: Signature = sign_key.sign_prehash(&msg_digest).unwrap();
     let signature_vu8 = signature.to_bytes();
 
     let verify_key = VerifyingKey::from(sign_key);
     let pk_vu8 = verify_key.to_encoded_point(false).to_bytes();
 
-    assert!(verify_key.verify(&msg_digest, &signature).is_ok(), "executing verification fialed!");
+    assert!(verify_key.verify_prehash(&msg_digest, &signature).is_ok(), "executing verification fialed!");
 
     // Setup the inputs.;
     let mut sp1in = SP1Stdin::new();

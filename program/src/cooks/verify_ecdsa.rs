@@ -2,6 +2,7 @@ use sp1_precompiles::secp256k1::verify_signature;
 use tiny_keccak::{Hasher, Keccak};
 use k256::ecdsa::Signature;
 // use k256::{ecdsa::{Signature, VerifyingKey, signature::Verifier}, PublicKey};
+// use k256::ecdsa::signature::hazmat::PrehashVerifier;
 
 pub fn verify_ecdsa() {
     let msg_bytes = sp1_zkvm::io::read_vec();
@@ -16,10 +17,10 @@ pub fn verify_ecdsa() {
     let signature_vu8: [u8; 64] = sp1_zkvm::io::read_vec().try_into().expect("circuit reading signature error");
     let signature: Signature = Signature::from_slice(&signature_vu8).expect("circuit construct signature error");
     
-    // `verify_signature` errors
+    // `verify_signature` relates to `sign_prehash`
     assert!(verify_signature(&pk_slice, &msg_digest, &signature, None), "Invalid signature");
 
-    // The below is ok
+    // `verify` is related to `sign`
     // let public_key = PublicKey::from_sec1_bytes(&pk_slice);
     // let public_key = public_key.unwrap();
     // let verify_key = VerifyingKey::from(&public_key);
