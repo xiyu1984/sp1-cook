@@ -67,12 +67,20 @@ fn main() {
         client
             .verify_plonk(&proof, &vk)
             .expect("verification failed");
+
+        proof
+            .save("proof-with-pis.bin")
+            .expect("saving proof failed");
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
 
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
+
+        proof
+            .save("proof-with-pis.bin")
+            .expect("saving proof failed");
     }
 
     info!("successfully generated and verified proof for the program!");
