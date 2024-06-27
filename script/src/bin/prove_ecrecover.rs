@@ -1,7 +1,6 @@
 use clap::Parser;
-use k256::ecdsa::{Signature, SigningKey, VerifyingKey};
+use k256::ecdsa::{SigningKey, VerifyingKey};
 use k256::ecdsa::signature::hazmat::PrehashVerifier;
-use k256::ecdsa::signature::hazmat::PrehashSigner;
 use k256::elliptic_curve::generic_array::sequence::Lengthen;
 use sp1_sdk::{ProverClient, SP1Stdin};
 use tiny_keccak::{Hasher, Keccak};
