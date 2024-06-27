@@ -59,7 +59,7 @@ fn main() {
 
     if args.evm {
         // Generate the proof.
-        let _proof = client
+        let proof = client
             .prove_plonk(&pk, sp1in)
             .expect("failed to generate proof");
 
