@@ -4,6 +4,7 @@ use k256::ecdsa::signature::hazmat::PrehashVerifier;
 use k256::elliptic_curve::generic_array::sequence::Lengthen;
 use sp1_sdk::{ProverClient, SP1Stdin};
 use tiny_keccak::{Hasher, Keccak};
+use tracing::info;
 
 pub const ECRECOVER_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
 
@@ -58,9 +59,14 @@ fn main() {
 
     if args.evm {
         // Generate the proof.
-        let _proof = client
+        let proof = client
             .prove_plonk(&pk, sp1in)
             .expect("failed to generate proof");
+
+        // Verify proof and public values
+        client
+            .verify_plonk(&proof, &vk)
+            .expect("verification failed");
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
@@ -68,4 +74,6 @@ fn main() {
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
     }
+
+    info!("successfully generated and verified proof for the program!");
 }
