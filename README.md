@@ -50,7 +50,7 @@ RUST_LOG=info cargo run --bin prove_ecdsa --release -- --evm
 
 ```sh
 cd script
-RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm
+RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm > ./zk-running.log 2>&1 &
 ```
 
 ### Unit Tests
