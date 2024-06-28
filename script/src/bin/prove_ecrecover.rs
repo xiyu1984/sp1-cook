@@ -1,8 +1,9 @@
 use clap::Parser;
+use fibonacci_script::utils::fixtures::{FixtureBuilder, SP1EcRecoverProofFixture, PROOF_PATH};
 use k256::ecdsa::{SigningKey, VerifyingKey};
 use k256::ecdsa::signature::hazmat::PrehashVerifier;
 use k256::elliptic_curve::generic_array::sequence::Lengthen;
-use sp1_sdk::{ProverClient, SP1Stdin};
+use sp1_sdk::{HashableKey, ProverClient, SP1Stdin};
 use tiny_keccak::{Hasher, Keccak};
 use tracing::info;
 
@@ -56,6 +57,8 @@ fn main() {
     // Setup the program.
     let (pk, vk) = client.setup(ECRECOVER_ELF);
     // let (mut _public_values, _) = client.execute(ECDSA_ELF, sp1in).unwrap();
+    // info!("vk hash: {:?}", vk.hash_babybear());
+    // std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
 
     if args.evm {
         // Generate the proof.
@@ -69,6 +72,13 @@ fn main() {
             .expect("verification failed");
 
         proof
+            .save("./proof-bin/ecrecover-ppis.bin")
+            .expect("saving proof failed");
+
+        std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
+
+        let ecr_fixture = SP1EcRecoverProofFixture::from_sp1_plonk_bn254_proof_vk(&proof, &vk);
+        ecr_fixture.save_to_local(&"ecr-fixture.json".to_string());
             .save("proof-with-pis.bin")
             .expect("saving proof failed");
     } else {

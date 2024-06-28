@@ -57,6 +57,8 @@ RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm > ./zk-running.
 
 ```sh
 RUST_LOG=info cargo test -r --lib -- utils::unit_tests
+
+RUST_LOG=info cargo test -r --lib -- utils::fixtures::tests::test_ecrecover_fixture --exact --nocapture
 ```
 
 ### Solidity Proof Verification
@@ -68,3 +70,6 @@ cd ../contracts
 forge test -v
 ```
 
+## Note
+
+- Different server makes elf different due to the different setup

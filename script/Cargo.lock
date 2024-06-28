@@ -1633,6 +1633,7 @@ name = "fibonacci-script"
 version = "0.1.0"
 dependencies = [
  "alloy-sol-types",
+ "anyhow",
  "clap",
  "hex",
  "k256",

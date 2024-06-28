@@ -19,7 +19,7 @@ use fibonacci_program::cooks::ecdsa_recover::ecdsa_recover;
 sp1_zkvm::entrypoint!(main);
 
 pub fn main() {
-    // fibonacci();
+    //  fibonacci();
     // calc_keccak256();
     // calc_poseidon();
     // verify_ecdsa();

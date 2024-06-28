@@ -26,3 +26,9 @@ pgo-data.profdata
 
 #.config
 **/.config
+
+# proof-bin
+**/proof-bin
+
+# typescript
+typescript
