@@ -1,5 +1,5 @@
 use clap::Parser;
-use fibonacci_script::utils::fixtures::PROOF_PATH;
+use fibonacci_script::utils::fixtures::{FixtureBuilder, SP1EcRecoverProofFixture, PROOF_PATH};
 use k256::ecdsa::{SigningKey, VerifyingKey};
 use k256::ecdsa::signature::hazmat::PrehashVerifier;
 use k256::elliptic_curve::generic_array::sequence::Lengthen;
@@ -76,6 +76,9 @@ fn main() {
             .expect("saving proof failed");
 
         std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
+
+        let ecr_fixture = SP1EcRecoverProofFixture::from_sp1_plonk_bn254_proof_vk(&proof, &vk);
+        ecr_fixture.save_to_local(&"ecr-fixture.json".to_string());
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
