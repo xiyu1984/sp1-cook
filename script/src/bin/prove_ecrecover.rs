@@ -58,6 +58,7 @@ fn main() {
     let (pk, vk) = client.setup(ECRECOVER_ELF);
     // let (mut _public_values, _) = client.execute(ECDSA_ELF, sp1in).unwrap();
     // info!("vk hash: {:?}", vk.hash_babybear());
+    // std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
 
     if args.evm {
         // Generate the proof.
@@ -74,7 +75,7 @@ fn main() {
             .save("./proof-bin/ecrecover-ppis.bin")
             .expect("saving proof failed");
 
-        std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32()).expect("write vk hash error");
+        std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");

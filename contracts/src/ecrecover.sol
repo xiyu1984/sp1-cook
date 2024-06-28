@@ -17,16 +17,7 @@ contract EcRecover is SP1Verifier {
 
     /// @notice The entrypoint for verifying the proof of a fibonacci number.
     /// @param proof The encoded proof.
-    /// @param publicValues The encoded public values.
-    function verifyEcRecoverProof(
-        bytes memory proof,
-        bytes memory publicValues
-    ) public view returns (uint32, uint32, uint32) {
+    function verifyEcRecoverProof(bytes memory proof, bytes memory publicValues) public view {
         this.verifyProof(ecr_vkey_hash, publicValues, proof);
-        (uint32 n, uint32 a, uint32 b) = abi.decode(
-            publicValues,
-            (uint32, uint32, uint32)
-        );
-        return (n, a, b);
     }
 }

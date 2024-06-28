@@ -61,8 +61,8 @@ impl<'a> FixtureBuilder<'a> for SP1EcRecoverProofFixture {
 #[cfg(test)]
 mod tests {
 
-    // use tracing::info;
-
+    use sp1_sdk::ProverClient;
+    use tracing::info;
     use super::*;
 
     #[test]
@@ -70,8 +70,20 @@ mod tests {
         sp1_sdk::utils::setup_logger();
 
         let ecr_bn254_proof = SP1PlonkBn254Proof::load("./proof-bin/ecrecover-ppis.bin").expect("load ecr-ppis error");
+        // call circuit
+        // Setup the prover client.
+        let client = ProverClient::new();
+
+        // Setup the program.
+        const ECRECOVER_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
+        let (_pk, vk) = client.setup(ECRECOVER_ELF);
+        info!("{}", vk.bytes32());
+        client
+            .verify_plonk(&ecr_bn254_proof, &vk)
+            .expect("verification failed");
+
         let ecr_vk_hash = std::fs::read_to_string(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash")).expect("load vk hash failed");
-        // info!("{}", ecr_vk_hash);
+        info!("{}", ecr_vk_hash);
 
         let ecrecover_proof_fixture = SP1EcRecoverProofFixture:: from_sp1_plonk_bn254_proof_vk_hash(&ecr_bn254_proof, ecr_vk_hash);
 
