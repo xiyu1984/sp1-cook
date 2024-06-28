@@ -70,3 +70,6 @@ cd ../contracts
 forge test -v
 ```
 
+## Note
+
+- Different server makes elf different due to the different setup
