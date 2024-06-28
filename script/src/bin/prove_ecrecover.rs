@@ -79,8 +79,6 @@ fn main() {
 
         let ecr_fixture = SP1EcRecoverProofFixture::from_sp1_plonk_bn254_proof_vk(&proof, &vk);
         ecr_fixture.save_to_local(&"ecr-fixture.json".to_string());
-            .save("proof-with-pis.bin")
-            .expect("saving proof failed");
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
