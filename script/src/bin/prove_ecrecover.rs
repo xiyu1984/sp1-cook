@@ -1,8 +1,9 @@
 use clap::Parser;
+use fibonacci_script::utils::fixtures::PROOF_PATH;
 use k256::ecdsa::{SigningKey, VerifyingKey};
 use k256::ecdsa::signature::hazmat::PrehashVerifier;
 use k256::elliptic_curve::generic_array::sequence::Lengthen;
-use sp1_sdk::{ProverClient, SP1Stdin};
+use sp1_sdk::{HashableKey, ProverClient, SP1Stdin};
 use tiny_keccak::{Hasher, Keccak};
 use tracing::info;
 
@@ -56,6 +57,7 @@ fn main() {
     // Setup the program.
     let (pk, vk) = client.setup(ECRECOVER_ELF);
     // let (mut _public_values, _) = client.execute(ECDSA_ELF, sp1in).unwrap();
+    // info!("vk hash: {:?}", vk.hash_babybear());
 
     if args.evm {
         // Generate the proof.
@@ -67,6 +69,12 @@ fn main() {
         client
             .verify_plonk(&proof, &vk)
             .expect("verification failed");
+
+        proof
+            .save("./proof-bin/ecrecover-ppis.bin")
+            .expect("saving proof failed");
+
+        std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32()).expect("write vk hash error");
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");

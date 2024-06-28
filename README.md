@@ -57,6 +57,8 @@ RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm
 
 ```sh
 RUST_LOG=info cargo test -r --lib -- utils::unit_tests
+
+RUST_LOG=info cargo test -r --lib -- utils::fixtures::tests::test_ecrecover_fixture --exact --nocapture
 ```
 
 ### Solidity Proof Verification
