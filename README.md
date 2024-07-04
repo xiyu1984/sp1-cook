@@ -53,12 +53,21 @@ cd script
 RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm > ./zk-running.log 2>&1 &
 ```
 
+```sh
+cd script
+RUST_LOG=info cargo run --bin prove_hybrid --release -- --evm > ./zk-running.log 2>&1 &
+```
+
 ### Unit Tests
 
 ```sh
 RUST_LOG=info cargo test -r --lib -- utils::unit_tests
 
 RUST_LOG=info cargo test -r --lib -- utils::fixtures::tests::test_ecrecover_fixture --exact --nocapture
+```
+
+```sh
+RUST_LOG=info cargo test -r --lib -- utils::p2_proof
 ```
 
 ### Solidity Proof Verification

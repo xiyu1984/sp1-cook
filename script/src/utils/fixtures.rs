@@ -19,15 +19,15 @@ pub trait FixtureBuilder<'a>: Clone + Serialize + Deserialize<'a> {
 // ec-recover
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SP1EcRecoverProofFixture {
+pub struct SP1ProofFixture {
     vkey_hash: String,
     public_values: String,
     proof: String,
 }
 
-impl<'a> FixtureBuilder<'a> for SP1EcRecoverProofFixture {
+impl<'a> FixtureBuilder<'a> for SP1ProofFixture {
     fn from_sp1_plonk_bn254_proof_vk(proof: &SP1PlonkBn254Proof, vk: &SP1VerifyingKey) -> Self {
-        SP1EcRecoverProofFixture {
+        SP1ProofFixture {
             vkey_hash: vk.bytes32().to_string(),
             public_values: proof.public_values.bytes().to_string(),
             proof: proof.bytes().to_string(),
@@ -35,7 +35,7 @@ impl<'a> FixtureBuilder<'a> for SP1EcRecoverProofFixture {
     }
 
     fn from_sp1_plonk_bn254_proof_vk_hash(proof: &SP1PlonkBn254Proof, vkey_hash: String) -> Self {
-        SP1EcRecoverProofFixture {
+        SP1ProofFixture {
             vkey_hash,
             public_values: proof.public_values.bytes().to_string(),
             proof: proof.bytes().to_string(),
@@ -52,9 +52,9 @@ impl<'a> FixtureBuilder<'a> for SP1EcRecoverProofFixture {
     }
 
     fn load_from_local(filename: &String) -> Self {
-        let fixture_buf = std::fs::read(format!("{}{}", FIXTURE_PATH, filename)).expect("load ec-recover fixture file error");
-        let ecrecover_fixture: SP1EcRecoverProofFixture = serde_json::from_slice(&fixture_buf).expect("deserilize fixture file error");
-        ecrecover_fixture
+        let fixture_buf = std::fs::read(format!("{}{}", FIXTURE_PATH, filename)).expect("load common fixture file error");
+        let sp1_fixture: SP1ProofFixture = serde_json::from_slice(&fixture_buf).expect("deserilize fixture file error");
+        sp1_fixture
     }
 }
 
@@ -85,7 +85,7 @@ mod tests {
         let ecr_vk_hash = std::fs::read_to_string(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash")).expect("load vk hash failed");
         info!("{}", ecr_vk_hash);
 
-        let ecrecover_proof_fixture = SP1EcRecoverProofFixture:: from_sp1_plonk_bn254_proof_vk_hash(&ecr_bn254_proof, ecr_vk_hash);
+        let ecrecover_proof_fixture = SP1ProofFixture:: from_sp1_plonk_bn254_proof_vk_hash(&ecr_bn254_proof, ecr_vk_hash);
 
         ecrecover_proof_fixture.save_to_local(&"ecr-fixture.json".to_string());
     }
