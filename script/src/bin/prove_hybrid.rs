@@ -39,6 +39,7 @@ fn main() {
 
     // Setup the program.
     let (pk, vk) = client.setup(P2_ELF);
+    // let (mut _public_values, _) = client.execute(P2_ELF, sp1in).unwrap();
 
     if args.evm {
         // Generate the proof.

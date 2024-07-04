@@ -56,6 +56,9 @@ RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm > ./zk-running.
 ```sh
 cd script
 RUST_LOG=info cargo run --bin prove_hybrid --release -- --evm > ./zk-running.log 2>&1 &
+
+SHARD_SIZE=4194304 RUST_LOG=info RUSTFLAGS='-C target-cpu=native' cargo run --bin prove_hybrid --release -- --evm > ./zk-running.log 2>&1 &
+
 ```
 
 ### Unit Tests
