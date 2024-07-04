@@ -52,10 +52,10 @@ fn main() {
             .expect("verification failed");
 
         proof
-            .save("./proof-bin/ecrecover-ppis.bin")
+            .save("./proof-bin/hybrid-ppis.bin")
             .expect("saving proof failed");
 
-        std::fs::write(format!("{}{}", PROOF_PATH, "p2-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
+        std::fs::write(format!("{}{}", PROOF_PATH, "hybrid-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
 
         let hybrid_fixture = SP1ProofFixture::from_sp1_plonk_bn254_proof_vk(&proof, &vk);
         hybrid_fixture.save_to_local(&"hybrid-fixture.json".to_string());
@@ -65,10 +65,6 @@ fn main() {
 
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
-
-        proof
-            .save("proof-with-pis.bin")
-            .expect("saving proof failed");
     }
 
     info!("successfully generated and verified proof for the program!");
