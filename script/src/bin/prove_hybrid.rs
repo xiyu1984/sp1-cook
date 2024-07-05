@@ -5,7 +5,7 @@ use sp1_sdk::{HashableKey, ProverClient, SP1Stdin};
 use tracing::info;
 
 
-pub const P2_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
+pub const P2_ELF: &[u8] = include_bytes!("../../../p2agg/elf/riscv32im-succinct-zkvm-elf");
 
 /// The arguments for the prove command.
 #[derive(Parser, Debug)]
