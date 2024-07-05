@@ -15,6 +15,8 @@
 
 use fibonacci_program::cooks::ecdsa_recover::ecdsa_recover;
 
+// use fibonacci_program::cooks::verify_p2_proof::verify_plonky2_proof;
+
 // use fibonacci_program::cooks::fibonacci::fibonacci;
 sp1_zkvm::entrypoint!(main);
 
@@ -24,4 +26,5 @@ pub fn main() {
     // calc_poseidon();
     // verify_ecdsa();
     ecdsa_recover();
+    // verify_plonky2_proof();
 }

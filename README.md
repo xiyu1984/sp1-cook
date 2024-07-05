@@ -53,12 +53,30 @@ cd script
 RUST_LOG=info cargo run --bin prove_ecrecover --release -- --evm > ./zk-running.log 2>&1 &
 ```
 
+```sh
+cd script
+RUST_LOG=info cargo run --bin prove_hybrid --release -- --evm > ./zk-running.log 2>&1 &
+
+SHARD_SIZE=4194304 RUST_LOG=info RUSTFLAGS='-C target-cpu=native' cargo run --bin prove_hybrid --release -- --evm > ./zk-running.log 2>&1 &
+```
+
+```sh
+cd script
+RUST_LOG=info cargo run --bin prove_recursive --release -- --evm > ./zk-running.log 2>&1 &
+
+SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_recursive --release -- --evm
+```
+
 ### Unit Tests
 
 ```sh
 RUST_LOG=info cargo test -r --lib -- utils::unit_tests
 
 RUST_LOG=info cargo test -r --lib -- utils::fixtures::tests::test_ecrecover_fixture --exact --nocapture
+```
+
+```sh
+RUST_LOG=info cargo test -r --lib -- utils::p2_proof
 ```
 
 ### Solidity Proof Verification
