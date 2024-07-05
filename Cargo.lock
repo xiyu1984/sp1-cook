@@ -3751,7 +3751,8 @@ name = "recursive"
 version = "0.1.0"
 dependencies = [
  "alloy-sol-types",
- "sp1-precompiles",
+ "hex",
+ "sha2",
  "sp1-zkvm",
 ]
 
@@ -4874,10 +4875,13 @@ dependencies = [
  "lazy_static",
  "libm",
  "once_cell",
+ "p3-baby-bear",
+ "p3-field",
  "rand",
  "serde",
  "sha2",
  "sp1-precompiles",
+ "sp1-primitives",
 ]
 
 [[package]]

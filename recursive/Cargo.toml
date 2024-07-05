@@ -6,5 +6,10 @@ edition = "2021"
 [dependencies]
 alloy-sol-types = "0.7.2"
 # sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-testnet" }
-sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint" }
-sp1-precompiles = { path = "../../../infra/sp1/zkvm/precompiles" }
+sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint", features = ["verify"]}
+
+hex = "0.4.3"
+sha2 = "0.10.8"
+
+[patch.crates-io]
+sha2-v0-10-8 = { git = "https://github.com/sp1-patches/RustCrypto-hashes.git", package = "sha2", branch = "patch-v0.10.8" }

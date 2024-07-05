@@ -2,7 +2,7 @@ use clap::Parser;
 use sp1_sdk::{ProverClient, SP1Stdin};
 use tracing::info;
 
-pub const KECCAK256_ELF: &[u8] = include_bytes!("../../../program/elf/riscv32im-succinct-zkvm-elf");
+pub const KECCAK256_ELF: &[u8] = include_bytes!("../../../program/elf/keccak256-riscv32im-succinct-zkvm-elf-local");
 
 /// The arguments for the prove command.
 #[derive(Parser, Debug)]

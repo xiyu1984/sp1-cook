@@ -2,7 +2,7 @@
 **/target
 
 # Cargo config
-.cargo
+# .cargo
 
 # Profile-guided optimization
 /tmp
@@ -35,3 +35,6 @@ typescript
 
 # .p2-data
 **/.p2-data
+
+# secret
+**/.secret
