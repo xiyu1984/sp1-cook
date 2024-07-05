@@ -39,4 +39,5 @@ typescript
 # secret
 **/.secret
 
-Cargo.loc
+Cargo.lock
+**/Cargo.lock
