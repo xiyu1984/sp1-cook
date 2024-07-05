@@ -122,8 +122,8 @@ fn main() {
         } else {
             // Generate the plonk bn254 proof.
             let r_proof = client
-            .prove(&aggregation_pk, stdin)
-            .expect("proving failed");
+                .prove(&aggregation_pk, stdin)
+                .expect("proving failed");
 
             // Verify the proof.
             client.verify(&r_proof, &r_vk).expect("failed to verify recursive proof");
