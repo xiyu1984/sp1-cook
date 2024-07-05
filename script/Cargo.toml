@@ -8,7 +8,7 @@ name = "prove"
 path = "src/bin/prove.rs"
 
 [dependencies]
-sp1-sdk = { path = "../../../infra/sp1/sdk", features = ["native-gnark"] }
+sp1-sdk = { path = "../../../infra/sp1/sdk" }
 # sp1-sdk = { path = "../../../infra/sp1/sdk" }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 serde = { version = "1.0", default-features = false, features = ["derive"] }
