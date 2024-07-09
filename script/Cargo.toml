@@ -8,7 +8,7 @@ name = "prove"
 path = "src/bin/prove.rs"
 
 [dependencies]
-sp1-sdk = { path = "../../../infra/sp1/sdk" , features = ["plonk"]}
+sp1-sdk = { path = "../../../infra/sp1/sdk" , features = ["native-gnark"]}
 # sp1-sdk = { path = "../../../infra/sp1/sdk" }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 serde = { version = "1.0", default-features = false, features = ["derive"] }
@@ -17,6 +17,7 @@ tracing = "0.1.40"
 alloy-sol-types = "0.7.2"
 plonky2 = { path = "../../../zkp/plonky2/plonky2" }               # https://github.com/xiyu1984/plonky2
 plonky2_field = { path = "../../../zkp/plonky2/field" }               # https://github.com/xiyu1984/plonky2
+plonky2_ecdsa = {path = "../../../zkp/plonky2-ecdsa"}             # https://github.com/xiyu1984/plonky2-ecdsa
 k256 = { version = "0.13.3", features = ["ecdsa", "std", "bits"] }
 tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "patch-v2.0.2", features = [
   "keccak",
@@ -24,6 +25,13 @@ tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "pa
 hex = {version = "0.4.3"}
 rand = "0.8.5"
 anyhow = {version = "1.0.86"}
+
+zk-6358 = { path = "../../../zkp/zk-6358" }
+sp1-eip712-type = { path = "../sp1-eip712-type" }
+interact = { path = "../../../zkp/zk-omni-executor/interact" }
+
+itertools = { version = "0.13.0" }
+num = { version = "0.4.3" }
 
 [build-dependencies]
 # sp1-helper = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-testnet" }
