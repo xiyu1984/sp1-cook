@@ -1,6 +1,5 @@
 use clap::Parser;
 use fibonacci_script::utils::{fixtures::{FixtureBuilder, SP1ProofFixture, PROOF_PATH}, unit_tests::p_test_generate_a_batch};
-use plonky2::plonk::config::{GenericConfig, PoseidonGoldilocksConfig};
 use plonky2_field::secp256k1_scalar::Secp256K1Scalar;
 use plonky2_field::types::Sample;
 use plonky2_ecdsa::curve::{curve_types::{AffinePoint, Curve, CurveScalar}, ecdsa::{ECDSAPublicKey, ECDSASecretKey}};
@@ -23,7 +22,7 @@ fn main() {
 
     // Parse the command line arguments.
     let args = ProveArgs::parse();
-    
+
     type EC = Secp256K1;
 
     let sk = ECDSASecretKey::<EC>(Secp256K1Scalar::rand());
@@ -39,6 +38,9 @@ fn main() {
     y.0.iter().for_each(|i| {
         y_le_bytes.append(&mut i.to_le_bytes().to_vec());
     });
+
+    info!("x: {:?}", x_le_bytes);
+    info!("y: {:?}", y_le_bytes);
 
     let batch_num: usize = 4;
 

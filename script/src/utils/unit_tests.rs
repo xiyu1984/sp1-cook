@@ -1,13 +1,17 @@
 use std::ops::AddAssign;
 
+use k256::ecdsa::{SigningKey, VerifyingKey, Signature, signature::hazmat::PrehashVerifier};
 use rand::{rngs::OsRng, Rng};
+use tracing::info;
 use zk_6358::utils6358::{deploy_tx::{BaseAsset, DeployTransaction}, mint_tx::MintTransaction, transaction::{generate_rand_input, generate_rand_output, GasFeeTransaction, SpendTransaction, TransactionInput, TransactionOutput}, tx_eip_712::EIP712DataHashing, utxo::{AMOUNT_LEN, TOKEN_ADDRESS_LEN, USER_ADDRESS_LEN}};
 use itertools::Itertools;
 use sp1_eip712_type::types::sp1_tx_types::SP1SignedOmniverseTx;
 use num::{bigint::RandBigInt, BigUint, FromPrimitive, Zero};
+use num::traits::ToBytes;
 
 use plonky2::{field::{secp256k1_scalar::Secp256K1Scalar, types::Field}, hash::keccak::KeccakHash};
 use plonky2_field::goldilocks_field::GoldilocksField;
+use plonky2_field::types::PrimeField;
 use plonky2_ecdsa::curve::{
     curve_types::{AffinePoint, Curve},
     ecdsa::{sign_message, verify_message, ECDSAPublicKey, ECDSASecretKey, ECDSASignature},
@@ -33,12 +37,16 @@ pub fn do_sign_msg_hash(sk: ECDSASecretKey<EC>, msg_hash: Secp256K1Scalar) -> [u
         sig_bytes.append(&mut i.to_le_bytes().to_vec());
     });
 
+    sig_bytes.push(0);
+
+    assert!(verify_message(msg_hash, sig_value, sk.to_public()), "native p2 signature verifying error!");
+
     sig_bytes.try_into().unwrap()
 }
 
 pub fn signature_from_bytes(sig_bytes: &[u8; SIGN_BYTES]) -> ECDSASignature<EC> {
-    let r_le_bytes: [u8; SIGN_BYTES / 2] = sig_bytes[..SIGN_BYTES / 2].try_into().unwrap();
-    let s_le_bytes: [u8; SIGN_BYTES / 2] = sig_bytes[SIGN_BYTES / 2..].try_into().unwrap();
+    let r_le_bytes: [u8; 32] = sig_bytes[..32].try_into().unwrap();
+    let s_le_bytes: [u8; 32] = sig_bytes[32..64].try_into().unwrap();
 
     let r =
         <EC as Curve>::ScalarField::from_noncanonical_biguint(BigUint::from_bytes_le(&r_le_bytes));
@@ -262,6 +270,23 @@ pub fn p_test_generate_out_from_in(inputs: &Vec<TransactionInput>) -> Vec<Transa
     outputs
 }
 
+pub fn verify_sp1_secp256k1(msg_hash: &[u8; 32], sig_bytes: &[u8; 65], sk: &ECDSASecretKey<EC>) {
+    let sp1_sk_bytes = sk.0.to_canonical_biguint().to_be_bytes();
+    let sign_key = SigningKey::from_slice(&sp1_sk_bytes).unwrap();
+    let verify_key = VerifyingKey::from(sign_key);
+    let pk_vu8 = verify_key.to_encoded_point(false).to_bytes();
+
+    info!("sp1 pk: {:?}", pk_vu8);
+
+    let mut sig_bytes = sig_bytes.clone();
+    sig_bytes[..32].reverse();
+    sig_bytes[32..64].reverse();
+    let signature: Signature = Signature::from_slice(&sig_bytes[..64]).unwrap();
+    let mut msg_hash = msg_hash.clone();
+    msg_hash.reverse();
+    assert!(verify_key.verify_prehash(&msg_hash, &signature).is_ok(), "executing verification fialed!");
+}
+
 pub fn p_test_generate_a_batch(
     sk: ECDSASecretKey<EC>,
     x_le_bytes: [u8; USER_ADDRESS_LEN],
@@ -288,6 +313,8 @@ pub fn p_test_generate_a_batch(
         &es_deploy_hash_value,
     ));
     let sig_bytes = do_sign_msg_hash(sk, msg_hash);
+
+    verify_sp1_secp256k1(&es_deploy_hash_value, &sig_bytes, &sk);
 
     signed_omni_tx_vec.push(SP1SignedOmniverseTx::OmniDeployTx(
         deploy_tx.sign(&y_le_bytes, &sig_bytes),
@@ -371,6 +398,8 @@ mod tests {
     use tiny_keccak::{Hasher, Keccak};
     use tracing::info;
 
+    use crate::utils::unit_tests::{do_verify_message, pk_from_bytes, signature_from_bytes};
+
 
     #[test]
     fn test_ecdsa_data_structure() {
@@ -419,15 +448,11 @@ mod tests {
     fn test_ethereum_ecdsa() {
         sp1_sdk::utils::setup_logger();
 
-        // let message = "Hello omniverse".as_bytes();
-        // let mut hasher = Keccak::v256();
-        // hasher.update(message);
-        // let mut msg_digest = [0u8; 32];
-        // hasher.finalize(&mut msg_digest);
-
-        // let sig = hex::decode("d5cce3b455c4a1e0c06f242856f4e8b825c120bcd93c7f5d4e11a97b65e3bbfa1236f4a1b28a4dab20bbc0e4aa55c18196b36538d884fc1799b2dfd56e6bb914").unwrap();
-        // info!("{}", sig.len());
-        // let pk = hex::decode("04b0c4ae6f28a5579cbeddbf40b2209a5296baf7a4dc818f909e801729ecb5e663dce22598685e985a6ed1a557cf2145deba5290418b3cc00680a90accc9b93522").unwrap();
+        // in `metamask` and `k256`, when signing and verifying, the input hash is reversed
+        // in `p2`, when signing and verifying, it just use the input hash
+        // this is why the `msg_digest` signed by the `metamask`, needs to be reversed when verifying by `p2` 
+        // So we need to use `eip_712_hash` instead of `eip_712_signature_hash` for the `txid`, 
+        // and use `eip_712_signature_hash` for the `p2` signature verifying circuit 
 
         // signature can be verified on Ethereum
         let msg_digest = hex::decode("4683e417a496ba5f2ee01b31c69dfed849c0007578ca59d69a29cd8a1df7cd94").unwrap();
@@ -440,5 +465,19 @@ mod tests {
 
         // assert!(verify_key.verify(&msg_digest, &signature).is_ok(), "`verify` error");
         assert!(verify_key.verify_prehash(&msg_digest, &signature).is_ok(), "`verify_prehash` error");
+
+        let mut sig = sig.clone();
+        // sig.push(0);
+        sig[..32].reverse();
+        sig[32..64].reverse();
+        let p2_sig = signature_from_bytes(&sig.try_into().unwrap());
+        let mut pk = pk[1..].to_vec();
+        pk[..32].reverse();
+        pk[32..].reverse();
+        let p2_pk = pk_from_bytes(&pk[..32].try_into().unwrap(), &pk[32..].try_into().unwrap());
+
+        let mut msg_digest = msg_digest.clone();
+        msg_digest.reverse();
+        assert!(do_verify_message(&msg_digest.try_into().unwrap(), p2_sig, p2_pk), "p2 signature verify error");
     }
 }
