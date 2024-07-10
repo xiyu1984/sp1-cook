@@ -15,6 +15,8 @@ pub const EIP712_ELF: &[u8] = include_bytes!("../../../sp1eip712/elf/riscv32im-s
 struct ProveArgs {
     #[clap(long, default_value = "false")]
     evm: bool,
+    #[clap(long, default_value = "false")]
+    exec: bool,
 }
 
 fn main() {
@@ -38,6 +40,7 @@ fn main() {
     y.0.iter().for_each(|i| {
         y_le_bytes.append(&mut i.to_le_bytes().to_vec());
     });
+    y_le_bytes.reverse();
 
     info!("x: {:?}", x_le_bytes);
     info!("y: {:?}", y_le_bytes);
@@ -58,10 +61,17 @@ fn main() {
     batched_somtx_vec.iter().for_each(|somtx| {
         sp1in.write(somtx);
     });
+    // sp1in.write::<usize>(&1);
+    // sp1in.write(&batched_somtx_vec[0]);
 
     // call circuit
     // Setup the prover client.
     let client = ProverClient::new();
+
+    if args.exec {
+        let (mut _public_values, _) = client.execute(EIP712_ELF, sp1in).unwrap();
+        return;
+    }
 
     // Setup the program.
     let (pk, vk) = client.setup(EIP712_ELF);
@@ -84,7 +94,7 @@ fn main() {
             .save("./proof-bin/eip712-ppis.bin")
             .expect("saving proof failed");
 
-        std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
+        std::fs::write(format!("{}{}", PROOF_PATH, "eip712-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
 
         let ecr_fixture = SP1ProofFixture::from_sp1_plonk_bn254_proof_vk(&proof, &vk);
         ecr_fixture.save_to_local(&"ecr-fixture.json".to_string());

@@ -61,6 +61,7 @@ pub trait SP1ECCrypto {
         let mut full_pk: [u8; SP1_FULL_PK_LEN] = [0; SP1_FULL_PK_LEN];
         full_pk[0] = 4;
         full_pk[1..1 + USER_ADDRESS_LEN].copy_from_slice(&self.owner_as_x_be());
+        full_pk[1 + USER_ADDRESS_LEN..].copy_from_slice(&self.y_be());
 
         full_pk
     }
