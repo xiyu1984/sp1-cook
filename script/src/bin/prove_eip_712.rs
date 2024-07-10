@@ -81,7 +81,7 @@ fn main() {
             .expect("verification failed");
 
         proof
-            .save("./proof-bin/ecrecover-ppis.bin")
+            .save("./proof-bin/eip712-ppis.bin")
             .expect("saving proof failed");
 
         std::fs::write(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
@@ -96,7 +96,7 @@ fn main() {
         client.verify(&proof, &vk).expect("failed to verify proof");
 
         proof
-            .save("proof-with-pis.bin")
+            .save("./proof-bin/proof-with-pis.bin")
             .expect("saving proof failed");
     }
 
