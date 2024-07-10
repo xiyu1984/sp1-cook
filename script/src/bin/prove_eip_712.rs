@@ -45,13 +45,13 @@ fn main() {
     info!("x: {:?}", x_le_bytes);
     info!("y: {:?}", y_le_bytes);
 
-    let batch_num: usize = 4;
+    let batch_num: usize = 1;
 
     let mut batched_somtx_vec = sp1_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap());
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
-    (1..batch_num / 4).for_each(|_| {
+    (1..batch_num).for_each(|_| {
         batched_somtx_vec.append(&mut sp1_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     });
 
