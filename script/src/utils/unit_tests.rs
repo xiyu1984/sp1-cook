@@ -424,15 +424,15 @@ pub fn sp1_test_generate_a_batch(
         biguint_to_fixed_bytes_le::<AMOUNT_LEN>(&BigUint::from_u64(per_mint_price).unwrap());
 
     let es_deploy_hash_value = deploy_tx.eip_712_hash();
-    info!("hash outside: {:?}", es_deploy_hash_value);
+    // info!("hash outside: {:?}", es_deploy_hash_value);
 
     let sign_key = sk_to_signing_key(&sk);
     let sig_bytes = sp1_sign_message_recoverable(&es_deploy_hash_value, &sign_key);
     let signature: Signature = Signature::from_slice(&sig_bytes[..64]).unwrap();
     let verify_key = VerifyingKey::from(&sign_key);
     assert!(verify_key.verify_prehash(&es_deploy_hash_value, &signature).is_ok(), "sp1 ecdsa verify error");
-    info!("signature outside: {:?}", sig_bytes);
-    info!("pk outside: {:?}", verify_key.to_encoded_point(false).to_bytes());
+    // info!("signature outside: {:?}", sig_bytes);
+    // info!("pk outside: {:?}", verify_key.to_encoded_point(false).to_bytes());
 
     signed_omni_tx_vec.push(SP1SignedOmniverseTx::OmniDeployTx(
         deploy_tx.sign(&y_le_bytes, &sig_bytes),
