@@ -1,6 +1,6 @@
-use zk_6358::utils6358::transaction::SpendTransaction;
+use zk_6358::{prelude::ZK6358GoldilocksField, utils6358::{transaction::SpendTransaction, type_utils::ZK6358DataHashing, utxo::HASH_LEN}};
 
-use super::sp1_tx_eip_712::SP1EIP712DataHashing;
+use super::sp1_tx_eip_712::{sp1_raw_bytes_keccak256_hash, SP1EIP712DataHashing, SP1TxIdHashing};
 
 
 impl SP1EIP712DataHashing for SpendTransaction {
@@ -27,5 +27,12 @@ impl SP1EIP712DataHashing for SpendTransaction {
         data_bytes.append(&mut self.gas_fee_tx.fee_outputs.data_hash().to_vec());
 
         data_bytes
+    }
+}
+
+impl SP1TxIdHashing for SpendTransaction {
+    fn txid_hashing(&self) -> [u8; HASH_LEN] {
+        let raw_bytes = <SpendTransaction as ZK6358DataHashing<ZK6358GoldilocksField>>::to_bytes(self);
+        sp1_raw_bytes_keccak256_hash(&raw_bytes)
     }
 }

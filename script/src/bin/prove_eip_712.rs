@@ -1,5 +1,5 @@
 use clap::Parser;
-use fibonacci_script::utils::{fixtures::{FixtureBuilder, SP1ProofFixture, PROOF_PATH}, unit_tests::p_test_generate_a_batch};
+use fibonacci_script::utils::{fixtures::{FixtureBuilder, SP1ProofFixture, PROOF_PATH}, unit_tests::{p_test_generate_a_batch, sp1_test_generate_a_batch}};
 use plonky2_field::secp256k1_scalar::Secp256K1Scalar;
 use plonky2_field::types::Sample;
 use plonky2_ecdsa::curve::{curve_types::{AffinePoint, Curve, CurveScalar}, ecdsa::{ECDSAPublicKey, ECDSASecretKey}};
@@ -44,12 +44,12 @@ fn main() {
 
     let batch_num: usize = 4;
 
-    let mut batched_somtx_vec = p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap());
+    let mut batched_somtx_vec = sp1_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap());
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     (1..batch_num / 4).for_each(|_| {
-        batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
+        batched_somtx_vec.append(&mut sp1_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
     });
 
     // Setup the inputs.;

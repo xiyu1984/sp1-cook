@@ -1,6 +1,6 @@
 use std::ops::AddAssign;
 
-use k256::ecdsa::{SigningKey, VerifyingKey, Signature, signature::hazmat::PrehashVerifier};
+use k256::{ecdsa::{signature::hazmat::PrehashVerifier, Signature, SigningKey, VerifyingKey}, elliptic_curve::generic_array::sequence::Lengthen};
 use rand::{rngs::OsRng, Rng};
 use tracing::info;
 use zk_6358::utils6358::{deploy_tx::{BaseAsset, DeployTransaction}, mint_tx::MintTransaction, transaction::{generate_rand_input, generate_rand_output, GasFeeTransaction, SpendTransaction, TransactionInput, TransactionOutput}, tx_eip_712::EIP712DataHashing, utxo::{AMOUNT_LEN, TOKEN_ADDRESS_LEN, USER_ADDRESS_LEN}};
@@ -383,6 +383,114 @@ pub fn p_test_generate_a_batch(
             &es_spend_hash_value,
         ));
         let sig_bytes = do_sign_msg_hash(sk, msg_hash);
+
+        signed_omni_tx_vec.push(SP1SignedOmniverseTx::OmniSpendTx(
+            spend_tx.sign(&y_le_bytes, &sig_bytes),
+        ));
+    });
+
+    signed_omni_tx_vec
+}
+
+pub fn sk_to_signing_key(sk: &ECDSASecretKey<EC>) -> SigningKey {
+    let sp1_sk_bytes = sk.0.to_canonical_biguint().to_be_bytes();
+    SigningKey::from_slice(&sp1_sk_bytes).unwrap()
+}
+
+pub fn sp1_sign_message_recoverable(msg_digest: &[u8; HASH_LEN], sk: &SigningKey) -> [u8; SIGN_BYTES] {
+    let sig_recoverable = sk.sign_prehash_recoverable(msg_digest).unwrap();
+    sig_recoverable.0.to_bytes().append(sig_recoverable.1.to_byte()).to_vec().try_into().unwrap()
+}
+
+pub fn sp1_test_generate_a_batch(
+    sk: ECDSASecretKey<EC>,
+    x_le_bytes: [u8; USER_ADDRESS_LEN],
+    y_le_bytes: [u8; USER_ADDRESS_LEN],
+) -> Vec<SP1SignedOmniverseTx> {
+    type F = GoldilocksField;
+    let total_supply: u64 = 21000000;
+    let per_mint: u64 = 100;
+    let per_mint_price: u64 = 1;
+
+    let mut signed_omni_tx_vec = Vec::new();
+
+    // generate a deploy tx
+    let mut deploy_tx = p_test_generate_rand_deploy_tx(x_le_bytes);
+    deploy_tx.base_asset_data.total_supply_le =
+        biguint_to_fixed_bytes_le::<AMOUNT_LEN>(&BigUint::from_u64(total_supply).unwrap());
+    deploy_tx.base_asset_data.per_mint_le =
+        biguint_to_fixed_bytes_le::<AMOUNT_LEN>(&BigUint::from_u64(per_mint).unwrap());
+    deploy_tx.base_asset_data.per_mint_price_le =
+        biguint_to_fixed_bytes_le::<AMOUNT_LEN>(&BigUint::from_u64(per_mint_price).unwrap());
+
+    let es_deploy_hash_value = deploy_tx.eip_712_hash();
+    let sign_key = sk_to_signing_key(&sk);
+    let sig_bytes = sp1_sign_message_recoverable(&es_deploy_hash_value, &sign_key);
+    let signature: Signature = Signature::from_slice(&sig_bytes[..64]).unwrap();
+    let verify_key = VerifyingKey::from(&sign_key);
+    assert!(verify_key.verify_prehash(&es_deploy_hash_value, &signature).is_ok(), "sp1 ecdsa verify error");
+
+    signed_omni_tx_vec.push(SP1SignedOmniverseTx::OmniDeployTx(
+        deploy_tx.sign(&y_le_bytes, &sig_bytes),
+    ));
+
+    let deployed_asset = deploy_tx.generate_deployed_asset::<F, KeccakHash<32>>();
+    // generate two mint txes
+    let mut minted_tx_vec = Vec::new();
+    (0..1).for_each(|_| {
+        let mint_tx = p_test_generate_rand_mint_tx(
+            x_le_bytes,
+            deployed_asset.asset_id,
+            per_mint,
+            per_mint_price,
+        );
+        let es_mint_hash_value = mint_tx.eip_712_hash();
+        let sig_bytes = sp1_sign_message_recoverable(&es_mint_hash_value, &sign_key);
+
+        signed_omni_tx_vec.push(SP1SignedOmniverseTx::OmniMintTx(
+            mint_tx.sign(&y_le_bytes, &sig_bytes),
+        ));
+        minted_tx_vec.push(mint_tx);
+    });
+
+    let mut spend_inputs = Vec::new();
+    minted_tx_vec.iter().for_each(|mint_tx| {
+        let utxo_to_be_spent = mint_tx.generate_outputs_utxo::<F>();
+
+        let mut inputs = utxo_to_be_spent
+            .iter()
+            .map(|utxo_tbs| TransactionInput {
+                pre_txid: utxo_tbs.pre_txid,
+                pre_index_le: utxo_tbs.pre_index_le,
+                address: utxo_tbs.address,
+                amount_le: utxo_tbs.amount_le,
+            })
+            .collect_vec();
+
+        spend_inputs.append(&mut inputs);
+    });
+
+    // generate a spend tx
+    let mut rng = rand::thread_rng();
+    let cut_idx: usize = rng.gen_range(1..spend_inputs.len() - 1);
+    (0..2).for_each(|i| {
+        let spends_this_time =
+            spend_inputs[i * cut_idx..spend_inputs.len() * i + (1 - i) * cut_idx].to_vec();
+        let (sp_gas_inputs, sp_gas_outputs) =
+            p_test_generate_rand_balanced_inputs_outputs(x_le_bytes);
+        let sp_outputs = p_test_generate_out_from_in(&spends_this_time);
+        let spend_tx = SpendTransaction {
+            asset_id: deployed_asset.asset_id,
+            inputs: spends_this_time,
+            outputs: sp_outputs,
+            gas_fee_tx: GasFeeTransaction {
+                fee_inputs: sp_gas_inputs,
+                fee_outputs: sp_gas_outputs,
+            },
+        };
+
+        let es_spend_hash_value = spend_tx.eip_712_hash();
+        let sig_bytes = sp1_sign_message_recoverable(&es_spend_hash_value, &sign_key);
 
         signed_omni_tx_vec.push(SP1SignedOmniverseTx::OmniSpendTx(
             spend_tx.sign(&y_le_bytes, &sig_bytes),

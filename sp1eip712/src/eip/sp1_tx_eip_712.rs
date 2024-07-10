@@ -1,7 +1,7 @@
 
-use zk_6358::utils6358::{
-    deploy_tx::DeployTransaction, mint_tx::MintTransaction, transaction::{TransactionInput, TransactionOutput}, utxo::HASH_LEN
-};
+use zk_6358::{prelude::ZK6358GoldilocksField, utils6358::{
+    deploy_tx::DeployTransaction, mint_tx::MintTransaction, transaction::{TransactionInput, TransactionOutput}, type_utils::ZK6358DataHashing, utxo::HASH_LEN
+}};
 
 use tiny_keccak::{Hasher, Keccak};
 
@@ -52,6 +52,10 @@ pub trait SP1EIP712DataHashing {
         eip_712_signature_hash.reverse();
         eip_712_signature_hash
     }
+}
+
+pub trait SP1TxIdHashing: ZK6358DataHashing<ZK6358GoldilocksField> {
+    fn txid_hashing(&self) -> [u8; HASH_LEN];
 }
 
 // TransactionInput
@@ -186,6 +190,13 @@ impl SP1EIP712DataHashing for DeployTransaction {
     }
 }
 
+impl SP1TxIdHashing for DeployTransaction {
+    fn txid_hashing(&self) -> [u8; HASH_LEN] {
+        let raw_bytes = <DeployTransaction as ZK6358DataHashing<ZK6358GoldilocksField>>::to_bytes(self);
+        sp1_raw_bytes_keccak256_hash(&raw_bytes)
+    }
+}
+
 // mint
 impl SP1EIP712DataHashing for MintTransaction {
     fn type_hash() -> [u8; HASH_LEN] {
@@ -208,6 +219,13 @@ impl SP1EIP712DataHashing for MintTransaction {
         data_bytes.append(&mut self.gas_fee_tx.fee_outputs.data_hash().to_vec());
 
         data_bytes
+    }
+}
+
+impl SP1TxIdHashing for MintTransaction {
+    fn txid_hashing(&self) -> [u8; HASH_LEN] {
+        let raw_bytes = <MintTransaction as ZK6358DataHashing<ZK6358GoldilocksField>>::to_bytes(self);
+        sp1_raw_bytes_keccak256_hash(&raw_bytes)
     }
 }
 

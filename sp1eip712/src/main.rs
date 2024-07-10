@@ -9,7 +9,9 @@ fn main() {
     for _ in 0..num_cases {
         let omni_signed_tx = sp1_zkvm::io::read::<SP1SignedOmniverseTx>();
         let eip712_sgin_hash = omni_signed_tx.eip_712_signature_hash();
+        let tx_hash = omni_signed_tx.txid_hash();
 
         sp1_zkvm::io::commit(&eip712_sgin_hash);
+        sp1_zkvm::io::commit(&tx_hash);
     }
 }
