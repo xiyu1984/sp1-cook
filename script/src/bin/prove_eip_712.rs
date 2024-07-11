@@ -99,7 +99,7 @@ fn main() {
         std::fs::write(format!("{}{}", PROOF_PATH, "eip712-vk-hash"), vk.bytes32().to_string()).expect("write vk hash error");
 
         let ecr_fixture = SP1ProofFixture::from_sp1_plonk_bn254_proof_vk(&proof, &vk);
-        ecr_fixture.save_to_local(&"ecr-fixture.json".to_string());
+        ecr_fixture.save_to_local(&"eip712-fixture.json".to_string());
     } else {
         // Generate the proof.
         let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
