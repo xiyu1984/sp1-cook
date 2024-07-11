@@ -17,6 +17,8 @@ struct ProveArgs {
     evm: bool,
     #[clap(long, default_value = "false")]
     exec: bool,
+    #[clap(long, default_value = "16")]
+    n: usize,
 }
 
 fn main() {
@@ -42,10 +44,10 @@ fn main() {
     });
     y_le_bytes.reverse();
 
-    info!("x: {:?}", x_le_bytes);
-    info!("y: {:?}", y_le_bytes);
+    // info!("x: {:?}", x_le_bytes);
+    // info!("y: {:?}", y_le_bytes);
 
-    let batch_num: usize = 1;
+    let batch_num: usize = args.n;
 
     let mut batched_somtx_vec = sp1_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap());
     // batched_somtx_vec.append(&mut p_test_generate_a_batch(sk, x_le_bytes.clone().try_into().unwrap(), y_le_bytes.clone().try_into().unwrap()));
