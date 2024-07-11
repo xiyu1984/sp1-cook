@@ -1,0 +1,8 @@
+[package]
+name = "p2agg"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fibonacci-program = { path = "../program" }
+sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint" }

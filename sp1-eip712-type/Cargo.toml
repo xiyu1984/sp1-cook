@@ -1,0 +1,10 @@
+[package]
+name = "sp1-eip712-type"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+zk-6358 = { path = "../../../zkp/zk-6358" }
+
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+serde = { version = "1.0", default-features = false, features = ["derive"] }

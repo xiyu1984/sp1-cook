@@ -119,6 +119,8 @@ fn main() {
             let recursive_fixture = SP1ProofFixture::from_sp1_plonk_bn254_proof_vk(&r_proof, &r_vk);
             recursive_fixture.save_to_local(&"recursive-fixture.json".to_string());
 
+            info!("successfully generated and verified recursive proof by prover network!");
+
         } else {
             // Generate the plonk bn254 proof.
             let r_proof = client

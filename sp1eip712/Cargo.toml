@@ -1,0 +1,19 @@
+[package]
+name = "sp1eip712"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint" }
+sp1-precompiles = { path = "../../../infra/sp1/zkvm/precompiles" }
+tiny-keccak = { git = "https://github.com/sp1-patches/tiny-keccak", branch = "patch-v2.0.2", features = [
+  "keccak",
+] }
+
+zk-6358 = { path = "../../../zkp/zk-6358" }
+sp1-eip712-type = { path = "../sp1-eip712-type" }
+
+[dev-dependencies]
+rand = { version = "0.8.5" }
+itertools = { version = "0.13.0" }
+num = { version = "0.4.3" }
