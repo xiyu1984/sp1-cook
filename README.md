@@ -67,6 +67,11 @@ RUST_LOG=info cargo run --bin prove_recursive --release -- --evm > ./zk-running.
 SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_recursive --release -- --evm --n 1 > ./zk-running.log 2>&1 &
 ```
 
+```sh
+cd script
+SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_eip_712 --release -- --evm > ./zk-running.log 2>&1 &
+```
+
 ### Unit Tests
 
 ```sh
