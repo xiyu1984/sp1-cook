@@ -69,7 +69,7 @@ SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_recur
 
 ```sh
 cd script
-SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_eip_712 --release -- --evm > ./zk-running.log 2>&1 &
+SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_eip_712 --release -- --evm --n 32 > ./zk-running.log 2>&1 &
 ```
 
 ### Unit Tests
