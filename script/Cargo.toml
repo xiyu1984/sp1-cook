@@ -9,6 +9,17 @@ path = "src/bin/prove.rs"
 
 [dependencies]
 sp1-sdk = { path = "../../../infra/sp1/sdk" , features = ["native-gnark"]}
+sp1-core ={ path = "../../../infra/sp1/core"}
+
+p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
+  "nightly-features",
+], rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-poseidon2 = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-matrix = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-symmetric = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+# p3-challenger = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+# p3-uni-stark = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+
 # sp1-sdk = { path = "../../../infra/sp1/sdk" }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 serde = { version = "1.0", default-features = false, features = ["derive"] }
@@ -28,10 +39,14 @@ anyhow = {version = "1.0.86"}
 
 zk-6358 = { path = "../../../zkp/zk-6358" }
 sp1-eip712-type = { path = "../sp1-eip712-type" }
+base_sp1_p3 ={ path = "../base_sp1_p3"}
 interact = { path = "../../../zkp/zk-omni-executor/interact" }
 
 itertools = { version = "0.13.0" }
 num = { version = "0.4.3" }
+zkhash = { git = "https://github.com/HorizenLabs/poseidon2" }
+
+p3agg ={ path = "../p3agg"}
 
 [build-dependencies]
 # sp1-helper = { git = "https://github.com/succinctlabs/sp1.git", tag = "v1.0.7-testnet" }
