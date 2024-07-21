@@ -1,0 +1,22 @@
+[package]
+name = "base_sp1_p3"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
+  "nightly-features",
+], rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-poseidon2 = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-matrix = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-symmetric = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-challenger = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+
+sp1-core = { path = "../../../infra/sp1/core"}
+sp1-recursion-core ={ path = "../../../infra/sp1/recursion/core"}
+
+itertools ={ version = "0.13.0"}
+
+[dev-dependencies]
+rand = "0.8.5"
+zkhash = { git = "https://github.com/HorizenLabs/poseidon2" }
