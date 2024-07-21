@@ -6,12 +6,12 @@ edition = "2021"
 [dependencies]
 p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
   "nightly-features",
-], rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-poseidon2 = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-matrix = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-symmetric = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-challenger = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-uni-stark = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+], rev = "3b5265f9d5af36534a46caebf0617595cfb42c5a" }
+p3-poseidon2 = { git = "https://github.com/Plonky3/Plonky3.git", rev = "3b5265f9d5af36534a46caebf0617595cfb42c5a" }
+p3-matrix = { git = "https://github.com/Plonky3/Plonky3.git", rev = "3b5265f9d5af36534a46caebf0617595cfb42c5a" }
+p3-symmetric = { git = "https://github.com/Plonky3/Plonky3.git", rev = "3b5265f9d5af36534a46caebf0617595cfb42c5a" }
+p3-challenger = { git = "https://github.com/Plonky3/Plonky3.git", rev = "3b5265f9d5af36534a46caebf0617595cfb42c5a" }
+p3-uni-stark = { git = "https://github.com/Plonky3/Plonky3.git", rev = "3b5265f9d5af36534a46caebf0617595cfb42c5a" }
 
 sp1-core = { path = "../../../infra/sp1/core"}
 sp1-recursion-core ={ path = "../../../infra/sp1/recursion/core"}
@@ -22,3 +22,5 @@ anyhow ={ version = "1.0.86"}
 [dev-dependencies]
 rand = "0.8.5"
 zkhash = { git = "https://github.com/HorizenLabs/poseidon2" }
+p3agg ={ path = "../p3agg"}
+sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint" }

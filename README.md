@@ -102,6 +102,8 @@ RUST_LOG=info cargo test -r --lib -- utils::p2_proof
 RUST_LOG=info cargo test -r --package base_sp1_p3 --lib -- utils::sp1_p3_poseidon2
 
 RUST_LOG=info cargo test -r --package base_sp1_p3 --lib -- utils::sp1_p3_poseidon2::tests::prove_babybear_success --exact --nocapture
+
+RUST_LOG=info cargo test -r --package base_sp1_p3 --lib -- utils::sp1_p3_poseidon2::tests::test_prove_verify --exact --nocapture
 ```
 
 ### Solidity Proof Verification

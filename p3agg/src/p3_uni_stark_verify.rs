@@ -20,7 +20,7 @@ pub fn verify_babybear(proof: Proof<UniConfig<BabyBearPoseidon2>>){
 
     let chip = Poseidon2Chip {
         fixed_log2_rows: None,
-        pad: true,
+        // pad: true,
     };
 
     p3_uni_stark::verify(&UniConfig(config.clone()), &chip, &mut challenger, &proof, &vec![])

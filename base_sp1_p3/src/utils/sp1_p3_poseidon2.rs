@@ -13,7 +13,7 @@ use sp1_core::stark::UniConfig;
 use sp1_core::utils::uni_stark_verify;
 use sp1_recursion_core::{poseidon2::{Poseidon2Chip, Poseidon2Event}, runtime::ExecutionRecord};
 
-use sp1_core::{air::machine::MachineAir, stark::StarkGenericConfig, utils::BabyBearPoseidon2};
+use sp1_core::{air::MachineAir, stark::StarkGenericConfig, utils::BabyBearPoseidon2};
 
 pub fn prove_babybear(inputs: Vec<[BabyBear; 16]>, outputs: Vec<[BabyBear; 16]>) -> Proof<UniConfig<BabyBearPoseidon2>> {
     let mut input_exec = ExecutionRecord::<BabyBear>::default();
@@ -25,7 +25,7 @@ pub fn prove_babybear(inputs: Vec<[BabyBear; 16]>, outputs: Vec<[BabyBear; 16]>)
 
     let chip = Poseidon2Chip {
         fixed_log2_rows: None,
-        pad: true,
+        // pad: true,
     };
     let trace: RowMajorMatrix<BabyBear> =
         chip.generate_trace(&input_exec, &mut ExecutionRecord::<BabyBear>::default());
@@ -64,13 +64,13 @@ mod tests {
     use super::*;
 
     use itertools::Itertools;
-    use sp1_core::utils::inner_perm;
+    use p3agg::p3_uni_stark_verify;
+    use sp1_core::{io::SP1Stdin, utils::inner_perm};
     use zkhash::ark_ff::UniformRand;
 
     use p3_symmetric::Permutation;
 
-    #[test]
-    fn prove_babybear_success() {
+    fn generate_test_data() -> (Vec<[BabyBear; 16]>, Vec<[BabyBear; 16]>) {
         let rng = &mut rand::thread_rng();
 
         let test_inputs: Vec<[BabyBear; 16]> = (0..256)
@@ -90,6 +90,13 @@ mod tests {
             .map(|input| gt.permute(*input))
             .collect::<Vec<_>>();
 
+        (test_inputs, expected_outputs)
+    }
+
+    #[test]
+    fn prove_babybear_success() {
+        let (test_inputs, expected_outputs) = generate_test_data();
+
         let _ = prove_babybear(test_inputs, expected_outputs);
     }
 
@@ -106,5 +113,21 @@ mod tests {
             .collect_vec();
 
         let _ = prove_babybear(test_inputs, bad_outputs);
+    }
+
+    #[test]
+    fn test_prove_verify() {
+        let (test_inputs, expected_outputs) = generate_test_data();
+
+        let proof: Proof<UniConfig<BabyBearPoseidon2>> = prove_babybear(test_inputs, expected_outputs);
+
+        // set test inputs and outputs
+        let mut sp1in = SP1Stdin::new();
+        sp1in.write(&proof);
+
+        // let read_proof = sp1_zkvm::io::read::<Proof<UniConfig<BabyBearPoseidon2>>>();
+        let read_proof = sp1in.read::<Proof<UniConfig<BabyBearPoseidon2>>>();
+
+        p3_uni_stark_verify::verify_babybear(read_proof);
     }
 }
