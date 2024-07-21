@@ -3,6 +3,15 @@
 This is a template for creating an end-to-end [SP1](https://github.com/succinctlabs/sp1) project 
 that can generate a proof of any RISC-V program and verify the proof onchain.
 
+## Docs about SP1
+
+- [Summary of the source code](https://trapdoortech.medium.com/zero-knowledge-proof-introduction-to-sp1-zkvm-source-code-d26f88f90ce4)
+
+- [SP1 technical white paper](https://drive.google.com/file/d/1aTCELr2b2Kc1NS-wZ0YYLKdw1Y2HcLTr/view)
+
+- SP1 resources
+    - [use cases](https://blog.succinct.xyz/introducing-sp1/)
+
 ## Requirements
 
 - [Rust](https://rustup.rs/)
@@ -72,6 +81,11 @@ cd script
 SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_eip_712 --release -- --evm --n 32 > ./zk-running.log 2>&1 &
 ```
 
+```sh
+cd script
+SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_p3_verify --release -- --exec exec --n 32 > ./zk-running.log 2>&1 &
+```
+
 ### Unit Tests
 
 ```sh
@@ -82,6 +96,12 @@ RUST_LOG=info cargo test -r --lib -- utils::fixtures::tests::test_ecrecover_fixt
 
 ```sh
 RUST_LOG=info cargo test -r --lib -- utils::p2_proof
+```
+
+```sh
+RUST_LOG=info cargo test -r --package base_sp1_p3 --lib -- utils::sp1_p3_poseidon2
+
+RUST_LOG=info cargo test -r --package base_sp1_p3 --lib -- utils::sp1_p3_poseidon2::tests::prove_babybear_success --exact --nocapture
 ```
 
 ### Solidity Proof Verification
