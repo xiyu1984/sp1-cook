@@ -1,4 +1,4 @@
-use sp1_precompiles::secp256k1::verify_signature;
+use sp1_lib::secp256k1::verify_signature;
 use tiny_keccak::{Hasher, Keccak};
 use k256::ecdsa::Signature;
 // use k256::{ecdsa::{Signature, VerifyingKey, signature::Verifier}, PublicKey};

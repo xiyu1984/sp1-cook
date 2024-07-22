@@ -37,9 +37,6 @@ fn main() {
     // Parse the command line arguments.
     let args = ProveArgs::parse();
 
-    // set test inputs and outputs
-    let mut sp1in = SP1Stdin::new();
-
     let rng = &mut rand::thread_rng();
 
     let test_inputs: Vec<[BabyBear; 16]> = (0..args.n)
@@ -61,10 +58,12 @@ fn main() {
 
     let p3_proof = base_sp1_p3::utils::sp1_p3_poseidon2::prove_babybear(test_inputs, expected_outputs);
 
+    // set test inputs and outputs
+    let mut sp1in = SP1Stdin::new();
     sp1in.write(&p3_proof);
 
     if args.exec == "exec" {
-        // p3agg::p3_uni_stark_verify::verify_babybear(p3_proof);
+        p3agg::p3_uni_stark_verify::verify_babybear(p3_proof);
         let (_, _) = client.execute(P3_AGG, sp1in).unwrap();
     } else {
         // Setup the proving and verifying keys.

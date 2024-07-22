@@ -1,4 +1,4 @@
-use sp1_precompiles::secp256k1;
+use sp1_lib::secp256k1;
 use tiny_keccak::{Hasher, Keccak};
 
 

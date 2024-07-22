@@ -13,7 +13,7 @@ use sp1_core::stark::UniConfig;
 use sp1_core::utils::uni_stark_verify;
 use sp1_recursion_core::{poseidon2::{Poseidon2Chip, Poseidon2Event}, runtime::ExecutionRecord};
 
-use sp1_core::{air::machine::MachineAir, stark::StarkGenericConfig, utils::BabyBearPoseidon2};
+use sp1_core::{air::MachineAir, stark::StarkGenericConfig, utils::BabyBearPoseidon2};
 
 pub fn prove_babybear(inputs: Vec<[BabyBear; 16]>, outputs: Vec<[BabyBear; 16]>) -> Proof<UniConfig<BabyBearPoseidon2>> {
     let mut input_exec = ExecutionRecord::<BabyBear>::default();

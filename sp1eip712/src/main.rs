@@ -1,7 +1,7 @@
 #![no_main]
 
 use sp1_eip712_type::types::sp1_tx_types::SP1SignedOmniverseTx;
-use sp1_precompiles::secp256k1;
+use sp1_lib::secp256k1;
 use sp1eip712::eip::traits::EIP712ForSignedOmniTx;
 
 sp1_zkvm::entrypoint!(main);
