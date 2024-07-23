@@ -30,9 +30,9 @@ pub struct SP1ProofFixture {
 impl<'a> FixtureBuilder<'a> for SP1ProofFixture {
     fn from_sp1_plonk_bn254_proof_vk(proof: &SP1ProofWithPublicValues, vk: &SP1VerifyingKey) -> Self {
         SP1ProofFixture {
-            vkey_hash: vk.bytes32().to_string(),
+            vkey_hash: vk.bytes32(),
             public_values: proof.public_values.raw(),
-            proof: proof.raw()
+            proof: format!("0x{}", hex::encode(proof.bytes()))
         }
     }
 
@@ -40,7 +40,7 @@ impl<'a> FixtureBuilder<'a> for SP1ProofFixture {
         SP1ProofFixture {
             vkey_hash,
             public_values: proof.public_values.raw(),
-            proof: proof.raw()
+            proof: format!("0x{}", hex::encode(proof.bytes()))
         }
     }
 
