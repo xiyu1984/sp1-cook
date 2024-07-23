@@ -4,9 +4,10 @@ use p3_poseidon2::Poseidon2;
 use p3_poseidon2::Poseidon2ExternalMatrixGeneral;
 
 use sp1_core::{stark::{StarkGenericConfig, UniConfig}, utils::BabyBearPoseidon2};
-use sp1_recursion_core::poseidon2::Poseidon2Chip;
+use sp1_recursion_core::poseidon2_wide::Poseidon2WideChip;
 
-pub fn verify_babybear(proof: Proof<UniConfig<BabyBearPoseidon2>>){
+pub fn verify_poseidon2_wide_babybear<const DEGREE: usize>(proof: Proof<UniConfig<BabyBearPoseidon2>>)
+{
     let config = BabyBearPoseidon2::compressed();
     
     // todo: read public values. The values are `baby bear`s
@@ -18,7 +19,7 @@ pub fn verify_babybear(proof: Proof<UniConfig<BabyBearPoseidon2>>){
         8,
     > = config.challenger();
 
-    let chip = Poseidon2Chip {
+    let chip = Poseidon2WideChip::<DEGREE> {
         fixed_log2_rows: None,
         pad: true,
     };

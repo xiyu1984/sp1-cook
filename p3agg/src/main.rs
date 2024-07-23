@@ -7,5 +7,5 @@ sp1_zkvm::entrypoint!(main);
 
 fn main() {
     let proof = sp1_zkvm::io::read::<Proof<UniConfig<BabyBearPoseidon2>>>();
-    p3_uni_stark_verify::verify_babybear(proof);
+    p3_uni_stark_verify::verify_poseidon2_wide_babybear::<3>(proof);
 }

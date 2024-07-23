@@ -3,11 +3,9 @@
 use clap::Parser;
 use fibonacci_script::utils::fixtures::{FixtureBuilder, SP1ProofFixture};
 use itertools::Itertools;
-use p3_baby_bear::{BabyBear, DiffusionMatrixBabyBear};
-use p3_poseidon2::{Poseidon2, Poseidon2ExternalMatrixGeneral};
-use p3_symmetric::Permutation;
+use p3_baby_bear::BabyBear;
+use p3_field::AbstractField;
 use sp1_sdk::{ProverClient, SP1Stdin};
-use sp1_core::utils::inner_perm;
 use tracing::info;
 use zkhash::ark_ff::UniformRand;
 
@@ -43,28 +41,31 @@ fn main() {
         .map(|_| core::array::from_fn(|_| BabyBear::rand(rng)))
         .collect_vec();
 
-    let gt: Poseidon2<
-        BabyBear,
-        Poseidon2ExternalMatrixGeneral,
-        DiffusionMatrixBabyBear,
-        16,
-        7,
-    > = inner_perm();
+    // let gt: Poseidon2<
+    //     BabyBear,
+    //     Poseidon2ExternalMatrixGeneral,
+    //     DiffusionMatrixBabyBear,
+    //     16,
+    //     7,
+    // > = inner_perm();
 
-    let expected_outputs = test_inputs
-        .iter()
-        .map(|input| gt.permute(*input))
-        .collect::<Vec<_>>();
+    // let expected_outputs = test_inputs
+    //     .iter()
+    //     .map(|input| gt.permute(*input))
+    //     .collect::<Vec<_>>();
 
-    let p3_proof = base_sp1_p3::utils::sp1_p3_poseidon2::prove_babybear(test_inputs, expected_outputs);
+    const DEGREE: usize = 3;
+
+    let input_exec = base_sp1_p3::utils::sp1_p3_poseidon2::generate_poseidon2_execution_record(&vec![vec![BabyBear::from_canonical_usize(73)]], &test_inputs);
+    let p3_proof = base_sp1_p3::utils::sp1_p3_poseidon2::prove_poseidon2_babybear::<DEGREE>(input_exec);
 
     // set test inputs and outputs
     let mut sp1in = SP1Stdin::new();
     sp1in.write(&p3_proof);
 
     if args.exec == "exec" {
-        p3agg::p3_uni_stark_verify::verify_babybear(p3_proof);
-        let (_, _) = client.execute(P3_AGG, sp1in).unwrap();
+        p3agg::p3_uni_stark_verify::verify_poseidon2_wide_babybear::<DEGREE>(p3_proof);
+        let (_, _) = client.execute(P3_AGG, sp1in).run().unwrap();
     } else {
         // Setup the proving and verifying keys.
         let (pk, vk) = client.setup(P3_AGG);
@@ -72,12 +73,14 @@ fn main() {
         if args.exec == "plonk" {
             // Generate the proof.
             let proof = client
-            .prove_plonk(&pk, sp1in)
+            .prove(&pk, sp1in)
+            .plonk()
+            .run()
             .expect("failed to generate proof");
     
             // Verify proof and public values
             client
-                .verify_plonk(&proof, &vk)
+                .verify(&proof, &vk)
                 .expect("verification failed");
     
             proof
@@ -93,6 +96,7 @@ fn main() {
             // Generate the plonk bn254 proof.
             let proof = client
                 .prove(&pk, sp1in)
+                .run()
                 .expect("proving failed");
     
             // Verify the proof.

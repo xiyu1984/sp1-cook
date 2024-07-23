@@ -49,12 +49,14 @@ fn main() {
     if args.evm {
         // Generate the proof.
         let _proof = client
-            .prove_plonk(&pk, sp1in)
+            .prove(&pk, sp1in)
+            .plonk()
+            .run()
             .expect("failed to generate proof");
         // create_plonk_fixture(&proof, &vk);
     } else {
         // Generate the proof.
-        let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
+        let proof = client.prove(&pk, sp1in).run().expect("failed to generate proof");
         let pis = proof.public_values.as_slice();
         info!("Successfully generated proof!");
         assert!(pis.len() % 32 == 0, "invalid hash out");

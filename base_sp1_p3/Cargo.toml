@@ -4,14 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
-  "nightly-features",
-], rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-poseidon2 = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-matrix = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-symmetric = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-challenger = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
-p3-uni-stark = { git = "https://github.com/Plonky3/Plonky3.git", rev = "88ea2b866e41329817e4761429b4a5a2a9751c07" }
+p3-baby-bear = { version = "0.1.3-succinct", features = ["nightly-features"] }
+p3-poseidon2 = { version = "0.1.3-succinct" }
+p3-matrix = { version = "0.1.3-succinct" }
+p3-symmetric = { version = "0.1.3-succinct" }
+p3-challenger = { version = "0.1.3-succinct" }
+p3-uni-stark = { version = "0.1.3-succinct" }
+p3-field ={ version = "0.1.3-succinct"}
 
 sp1-core = { path = "../../../infra/sp1/core"}
 sp1-recursion-core ={ path = "../../../infra/sp1/recursion/core"}

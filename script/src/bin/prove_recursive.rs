@@ -2,7 +2,7 @@
 
 use clap::Parser;
 use fibonacci_script::utils::fixtures::{FixtureBuilder, SP1ProofFixture, PROOF_PATH};
-use sp1_sdk::{HashableKey, ProverClient, SP1CompressedProof, SP1Stdin, SP1VerifyingKey};
+use sp1_sdk::{HashableKey, ProverClient, SP1Proof, SP1ProofWithPublicValues, SP1Stdin, SP1VerifyingKey};
 use tracing::info;
 
 /// A program that aggregates the proofs of the simple program.
@@ -16,7 +16,7 @@ const KECCAK256_ELF: &[u8] =
 ///
 /// Consists of a proof and a verification key.
 struct AggregationInput {
-    pub proof: SP1CompressedProof,
+    pub proof: SP1ProofWithPublicValues,
     // pub proof: SP1Proof,
     pub vk: SP1VerifyingKey,
 }
@@ -59,7 +59,9 @@ fn main() {
     
             // only compressed proof could be made into `syscall_verify_sp1_proof`
             client
-                .prove_compressed(&keccak_pk, sp1in)
+                .prove(&keccak_pk, sp1in)
+                .compressed()
+                .run()
                 .expect("proving failed")
             
             // client
@@ -96,18 +98,23 @@ fn main() {
         // Note: this data will not actually be read by the aggregation program, instead it will be
         // witnessed by the prover during the recursive aggregation process inside SP1 itself.
         for input in inputs {
-            stdin.write_proof(input.proof.proof, input.vk.vk);
+            let SP1Proof::Compressed(proof) = input.proof.proof else {
+                panic!()
+            };
+            stdin.write_proof(proof, input.vk.vk);
         }
 
         if args.evm {
             // Generate the proof.
             let r_proof = client
-            .prove_plonk(&aggregation_pk, stdin)
+            .prove(&aggregation_pk, stdin)
+            .plonk()
+            .run()
             .expect("failed to generate proof");
 
             // Verify proof and public values
             client
-                .verify_plonk(&r_proof, &r_vk)
+                .verify(&r_proof, &r_vk)
                 .expect("verification failed");
 
             r_proof
@@ -125,6 +132,7 @@ fn main() {
             // Generate the plonk bn254 proof.
             let r_proof = client
                 .prove(&aggregation_pk, stdin)
+                .run()
                 .expect("proving failed");
 
             // Verify the proof.

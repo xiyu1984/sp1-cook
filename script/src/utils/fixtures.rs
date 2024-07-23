@@ -1,6 +1,8 @@
 
+use std::fmt::Debug;
+
 use serde::{Deserialize, Serialize};
-use sp1_sdk::{HashableKey, SP1PlonkBn254Proof, SP1VerifyingKey};
+use sp1_sdk::{HashableKey, SP1ProofWithPublicValues, SP1VerifyingKey};
 
 pub const FIXTURE_PATH: &str = "../contracts/src/fixtures/";
 pub const PROOF_PATH: &str = "./proof-bin/";
@@ -8,8 +10,8 @@ pub const PROOF_PATH: &str = "./proof-bin/";
 //////////////////////////////////////////////////////////////////////
 // trait
 pub trait FixtureBuilder<'a>: Clone + Serialize + Deserialize<'a> {
-    fn from_sp1_plonk_bn254_proof_vk(proof: &SP1PlonkBn254Proof, vk: &SP1VerifyingKey) -> Self;
-    fn from_sp1_plonk_bn254_proof_vk_hash(proof: &SP1PlonkBn254Proof, vk_hash: String) -> Self;
+    fn from_sp1_plonk_bn254_proof_vk(proof: &SP1ProofWithPublicValues, vk: &SP1VerifyingKey) -> Self;
+    fn from_sp1_plonk_bn254_proof_vk_hash(proof: &SP1ProofWithPublicValues, vk_hash: String) -> Self;
 
     fn save_to_local(&self, filename: &String);
     fn load_from_local(filename: &String) -> Self;
@@ -26,19 +28,19 @@ pub struct SP1ProofFixture {
 }
 
 impl<'a> FixtureBuilder<'a> for SP1ProofFixture {
-    fn from_sp1_plonk_bn254_proof_vk(proof: &SP1PlonkBn254Proof, vk: &SP1VerifyingKey) -> Self {
+    fn from_sp1_plonk_bn254_proof_vk(proof: &SP1ProofWithPublicValues, vk: &SP1VerifyingKey) -> Self {
         SP1ProofFixture {
             vkey_hash: vk.bytes32().to_string(),
-            public_values: proof.public_values.bytes().to_string(),
-            proof: proof.bytes().to_string(),
+            public_values: proof.public_values.raw(),
+            proof: proof.raw()
         }
     }
 
-    fn from_sp1_plonk_bn254_proof_vk_hash(proof: &SP1PlonkBn254Proof, vkey_hash: String) -> Self {
+    fn from_sp1_plonk_bn254_proof_vk_hash(proof: &SP1ProofWithPublicValues, vkey_hash: String) -> Self {
         SP1ProofFixture {
             vkey_hash,
-            public_values: proof.public_values.bytes().to_string(),
-            proof: proof.bytes().to_string(),
+            public_values: proof.public_values.raw(),
+            proof: proof.raw()
         }
     }
 
@@ -69,7 +71,7 @@ mod tests {
     fn test_ecrecover_fixture() {
         sp1_sdk::utils::setup_logger();
 
-        let ecr_bn254_proof = SP1PlonkBn254Proof::load("./proof-bin/ecrecover-ppis.bin").expect("load ecr-ppis error");
+        let ecr_bn254_proof = SP1ProofWithPublicValues::load("./proof-bin/ecrecover-ppis.bin").expect("load ecr-ppis error");
         // call circuit
         // Setup the prover client.
         let client = ProverClient::new();
@@ -79,7 +81,7 @@ mod tests {
         let (_pk, vk) = client.setup(ECRECOVER_ELF);
         info!("{}", vk.bytes32());
         client
-            .verify_plonk(&ecr_bn254_proof, &vk)
+            .verify(&ecr_bn254_proof, &vk)
             .expect("verification failed");
 
         let ecr_vk_hash = std::fs::read_to_string(format!("{}{}", PROOF_PATH, "ecrecover-vk-hash")).expect("load vk hash failed");

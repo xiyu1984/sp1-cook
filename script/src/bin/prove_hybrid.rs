@@ -44,12 +44,14 @@ fn main() {
     if args.evm {
         // Generate the proof.
         let proof = client
-            .prove_plonk(&pk, sp1in)
+            .prove(&pk, sp1in)
+            .plonk()
+            .run()
             .expect("failed to generate proof");
 
         // Verify proof and public values
         client
-            .verify_plonk(&proof, &vk)
+            .verify(&proof, &vk)
             .expect("verification failed");
 
         proof
@@ -62,7 +64,7 @@ fn main() {
         hybrid_fixture.save_to_local(&"hybrid-fixture.json".to_string());
     } else {
         // Generate the proof.
-        let proof = client.prove(&pk, sp1in).expect("failed to generate proof");
+        let proof = client.prove(&pk, sp1in).run().expect("failed to generate proof");
 
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
