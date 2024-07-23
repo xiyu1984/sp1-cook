@@ -58,32 +58,33 @@ pub fn generate_poseidon2_execution_record(
             let start_addr = BabyBear::from_canonical_usize(i + 1);
             let input_len = BabyBear::from_canonical_usize(wide_input.len());
 
-            let mut absorb_event = Poseidon2AbsorbEvent::new(absorb_ts,
+            let mut absorb_event = 
+                // Poseidon2AbsorbEvent::new(absorb_ts,
+                //     hash_and_absorb_num,
+                //     start_addr,
+                //     input_len,
+                //     BabyBear::from_canonical_u32(hash_num),
+                //     BabyBear::from_canonical_u32(absorb_num));
+            Poseidon2AbsorbEvent {
+                clk: absorb_ts,
                 hash_and_absorb_num,
-                start_addr,
+                input_addr: start_addr,
                 input_len,
-                BabyBear::from_canonical_u32(hash_num),
-                BabyBear::from_canonical_u32(absorb_num));
-            // Poseidon2AbsorbEvent {
-            //     clk: absorb_ts,
-            //     hash_and_absorb_num,
-            //     input_addr: start_addr,
-            //     input_len,
-            //     hash_num: BabyBear::from_canonical_u32(hash_num),
-            //     absorb_num: BabyBear::from_canonical_u32(absorb_num),
-            //     iterations: Vec::new(),
-            // };
+                hash_num: BabyBear::from_canonical_u32(hash_num),
+                absorb_num: BabyBear::from_canonical_u32(absorb_num),
+                iterations: Vec::new(),
+            };
 
             let mut hash_state = [BabyBear::zero(); sp1_recursion_core::poseidon2_wide::WIDTH];
             let mut hash_state_cursor = 0;
-            absorb_event.populate_iterations(
-                start_addr,
-                input_len,
-                &dummy_memory_access_records(wide_input.clone(), prev_ts, absorb_ts),
-                &permuter,
-                &mut hash_state,
-                &mut hash_state_cursor,
-            );
+            // absorb_event.populate_iterations(
+            //     start_addr,
+            //     input_len,
+            //     &dummy_memory_access_records(wide_input.clone(), prev_ts, absorb_ts),
+            //     &permuter,
+            //     &mut hash_state,
+            //     &mut hash_state_cursor,
+            // );
 
             input_exec
                 .poseidon2_hash_events
@@ -266,25 +267,35 @@ mod tests {
                 let start_addr = BabyBear::from_canonical_usize(i + 1);
                 let input_len = BabyBear::from_canonical_usize(*input_size);
     
-                let mut absorb_event = Poseidon2AbsorbEvent::new(
-                    absorb_ts,
-                    hash_and_absorb_num,
-                    start_addr,
-                    input_len,
-                    BabyBear::from_canonical_u32(hash_num),
-                    BabyBear::from_canonical_u32(absorb_num),
-                );
+                let mut absorb_event = 
+                    // Poseidon2AbsorbEvent::new(
+                    //     absorb_ts,
+                    //     hash_and_absorb_num,
+                    //     start_addr,
+                    //     input_len,
+                    //     BabyBear::from_canonical_u32(hash_num),
+                    //     BabyBear::from_canonical_u32(absorb_num),
+                    // );
+                    Poseidon2AbsorbEvent {
+                        clk: absorb_ts,
+                        hash_and_absorb_num,
+                        input_addr: start_addr,
+                        input_len,
+                        hash_num: BabyBear::from_canonical_u32(hash_num),
+                        absorb_num: BabyBear::from_canonical_u32(absorb_num),
+                        iterations: Vec::new(),
+                    };
     
                 let mut hash_state = [BabyBear::zero(); sp1_recursion_core::poseidon2_wide::WIDTH];
                 let mut hash_state_cursor = 0;
-                absorb_event.populate_iterations(
-                    start_addr,
-                    input_len,
-                    &dummy_memory_access_records(test_input.clone(), prev_ts, absorb_ts),
-                    &permuter,
-                    &mut hash_state,
-                    &mut hash_state_cursor,
-                );
+                // absorb_event.populate_iterations(
+                //     start_addr,
+                //     input_len,
+                //     &dummy_memory_access_records(test_input.clone(), prev_ts, absorb_ts),
+                //     &permuter,
+                //     &mut hash_state,
+                //     &mut hash_state_cursor,
+                // );
     
                 input_exec
                     .poseidon2_hash_events
