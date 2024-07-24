@@ -64,7 +64,7 @@ fn main() {
     sp1in.write(&p3_proof);
 
     if args.exec == "exec" {
-        p3agg::p3_uni_stark_verify::verify_poseidon2_wide_babybear::<DEGREE>(p3_proof);
+        // p3agg::p3_uni_stark_verify::verify_poseidon2_wide_babybear::<DEGREE>(p3_proof);
         let (_, _) = client.execute(P3_AGG, sp1in).run().unwrap();
     } else {
         // Setup the proving and verifying keys.
