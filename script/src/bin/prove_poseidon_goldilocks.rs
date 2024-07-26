@@ -38,7 +38,7 @@ fn main() {
 
     type F = GoldilocksField;
     (0..args.n).for_each(|i| {
-        let input_msg = vec![F::from_canonical_usize(i); 10];
+        let input_msg = vec![F::from_canonical_usize(i); 96];
         sp1in.write(&input_msg);
     });
 

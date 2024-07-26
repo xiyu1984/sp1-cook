@@ -35,8 +35,8 @@ fn main() {
     info!("n: {}", args.n);
 
     (0..args.n).for_each(|i| {
-        let input_msg = format!("hello omniverse {}", i);
-        sp1in.write_vec(input_msg.as_bytes().to_vec());
+        let input_msg = vec![i as u8; 96];
+        sp1in.write_vec(input_msg);
     });
 
     // sp1in.buffer.iter().for_each(|buf| {
