@@ -35,7 +35,7 @@ fn main() {
     info!("n: {}", args.n);
 
     (0..args.n).for_each(|i| {
-        let input_msg = vec![i as u8; 96];
+        let input_msg = vec![i as u8; 96 * 20 * 64];
         sp1in.write_vec(input_msg);
     });
 

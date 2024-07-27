@@ -64,10 +64,12 @@ fn main() {
         hybrid_fixture.save_to_local(&"hybrid-fixture.json".to_string());
     } else {
         // Generate the proof.
-        let proof = client.prove(&pk, sp1in).run().expect("failed to generate proof");
+        let proof = client.prove(&pk, sp1in).compressed().run().expect("failed to generate proof");
 
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
+
+        proof.save("./proof-bin/p2-agg-compressed.bin").expect("saving proof failed");
     }
 
     info!("successfully generated and verified proof for the program!");
