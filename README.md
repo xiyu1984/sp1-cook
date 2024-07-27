@@ -91,6 +91,11 @@ cd script
 SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_p3_verify --release -- --exec exec --n 32 > ./zk-running.log 2>&1 &
 ```
 
+```sh
+cd script
+SP1_PROVER=network SP1_PRIVATE_KEY=... RUST_LOG=info cargo run --bin prove_bytes_equal --release -- --evm --n 32 > ./zk-running.log 2>&1 &
+```
+
 ### Unit Tests
 
 ```sh

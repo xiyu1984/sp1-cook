@@ -1,0 +1,7 @@
+[package]
+name = "bytes_op"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp1-zkvm = { path = "../../../infra/sp1/zkvm/entrypoint" }

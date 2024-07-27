@@ -2,7 +2,7 @@
 
 members = [
     "program", "script", "recursive"
-, "p2agg", "sp1eip712", "sp1-eip712-type", "base_sp1_p3", "p3agg"]
+, "p2agg", "sp1eip712", "sp1-eip712-type", "base_sp1_p3", "p3agg", "bytes_op"]
 
 resolver = "2"
 
