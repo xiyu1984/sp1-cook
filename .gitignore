@@ -41,3 +41,6 @@ typescript
 
 Cargo.lock
 **/Cargo.lock
+
+# log
+**/*.log
