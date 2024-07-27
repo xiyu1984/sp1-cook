@@ -60,7 +60,7 @@ fn main() {
         client.verify(&proof, &vk).expect("failed to verify proof");
     } else {
         // Generate the proof.
-        let proof = client.prove(&pk, stdin).run().expect("failed to generate proof");
+        let proof = client.prove(&pk, stdin).compressed().run().expect("failed to generate proof");
 
         // Verify the proof.
         client.verify(&proof, &vk).expect("failed to verify proof");
