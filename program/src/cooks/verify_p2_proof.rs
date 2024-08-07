@@ -13,7 +13,11 @@ pub fn verify_plonky2_proof() {
     let gate_serializer = DefaultGateSerializer;
     let common = CommonCircuitData::<F, D>::from_bytes(ccd_bytes.clone(), &gate_serializer).unwrap();
 
-    sp1_zkvm::io::commit(&ppis.public_inputs);
+    // sp1_zkvm::io::commit(&ppis.public_inputs);
+    let mut pv_bytes = Vec::with_capacity(ppis.public_inputs.len() * 8);
+    for pv in &ppis.public_inputs {
+        pv_bytes.extend_from_slice(&pv.0.to_le_bytes());
+    }
 
     let vd = VerifierCircuitData {
         verifier_only: vod,
@@ -21,4 +25,6 @@ pub fn verify_plonky2_proof() {
     };
 
     vd.verify(ppis).unwrap();
+
+    sp1_zkvm::io::commit_slice(&pv_bytes);
 }

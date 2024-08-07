@@ -13,6 +13,12 @@ pub const P2_ELF: &[u8] = include_bytes!("../../../p2agg/elf/riscv32im-succinct-
 struct ProveArgs {
     #[clap(long, default_value = "false")]
     evm: bool,
+
+    #[clap(long, default_value = "false")]
+    exec: bool,
+
+    #[clap(long, default_value = "128-tx")]
+    proof: String
 }
 
 fn main() {
@@ -25,7 +31,7 @@ fn main() {
     // Parse the command line arguments.
     let args = ProveArgs::parse();
 
-    let p2_proof = load_p2_proof::<P2F, P2C, P2D>("8").expect("load stored p2 proof error");
+    let p2_proof = load_p2_proof::<P2F, P2C, P2D>(&format!("{}", args.proof)).expect("load stored p2 proof error");
 
     // Setup the inputs.;
     let mut sp1in = SP1Stdin::new();
@@ -36,6 +42,12 @@ fn main() {
     // call circuit
     // Setup the prover client.
     let client = ProverClient::new();
+
+    // exec
+    if args.exec {
+        let (mut _public_values, _) = client.execute(P2_ELF, sp1in).run().unwrap();
+        return;
+    }
 
     // Setup the program.
     let (pk, vk) = client.setup(P2_ELF);

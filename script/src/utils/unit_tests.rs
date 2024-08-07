@@ -344,7 +344,7 @@ pub fn p_test_generate_a_batch(
 
     let mut spend_inputs = Vec::new();
     minted_tx_vec.iter().for_each(|mint_tx| {
-        let utxo_to_be_spent = mint_tx.generate_outputs_utxo::<F>();
+        let utxo_to_be_spent = mint_tx.generate_outputs_utxo::<F>(&mint_tx.eip_712_hash());
 
         let mut inputs = utxo_to_be_spent
             .iter()
@@ -459,7 +459,7 @@ pub fn sp1_test_generate_a_batch(
 
     let mut spend_inputs = Vec::new();
     minted_tx_vec.iter().for_each(|mint_tx| {
-        let utxo_to_be_spent = mint_tx.generate_outputs_utxo::<F>();
+        let utxo_to_be_spent = mint_tx.generate_outputs_utxo::<F>(&mint_tx.eip_712_hash());
 
         let mut inputs = utxo_to_be_spent
             .iter()
